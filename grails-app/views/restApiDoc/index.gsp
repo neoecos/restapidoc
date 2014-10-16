@@ -15,13 +15,9 @@
     <script type="text/javascript" src="../js/jsondoc/prettify.js"></script>
     <script src="../js/jsondoc/bootstrap-button.js"></script>
     <!-- Le styles -->
-    <link href="../css/jsondoc/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/jsondoc/font-awesome.css" rel="stylesheet" >
-
-    <!-- Le styles -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/font-awesome.css" rel="stylesheet" >
-    
+
     <style type="text/css">
     body {
         padding-top: 60px;
@@ -92,7 +88,7 @@
         word-wrap: break-word;
     }
     </style>
-    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="../css/jsondoc/bootstrap-responsive.min.css" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -107,7 +103,7 @@
         <div class="container-fluid">
             <a class="brand" href="#">JSONDoc</a>
             <form class="navbar-form pull-left">
-                <input id="jsondocfetch" class="span5" type="text" placeholder="Insert here the JSONDoc URL" autocomplete="off" value="http://jsondoc.eu01.aws.af.cm/api/jsondoc" />
+                <input id="jsondocfetch" class="span5" type="text" placeholder="Insert here the JSONDoc URL" autocomplete="off"/>
                 <button id="getDocButton" class="btn">Get documentation</button>
             </form>
         </div>
