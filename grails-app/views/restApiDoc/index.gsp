@@ -14,10 +14,14 @@
     <script type="text/javascript" src="../js/jsondoc/jlinq.js"></script>
     <script type="text/javascript" src="../js/jsondoc/prettify.js"></script>
     <script src="../js/jsondoc/bootstrap-button.js"></script>
-
     <!-- Le styles -->
     <link href="../css/jsondoc/bootstrap.min.css" rel="stylesheet">
     <link href="../css/jsondoc/font-awesome.css" rel="stylesheet" >
+
+    <!-- Le styles -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.css" rel="stylesheet" >
+    
     <style type="text/css">
     body {
         padding-top: 60px;
@@ -83,8 +87,12 @@
         line-height: 20px;
         text-shadow: 0 1px 0 #fff;
     }
+
+    table td {
+        word-wrap: break-word;
+    }
     </style>
-    <link href="../css/jsondoc/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -99,7 +107,7 @@
         <div class="container-fluid">
             <a class="brand" href="#">JSONDoc</a>
             <form class="navbar-form pull-left">
-                <input id="jsondocfetch" class="span5" type="text" placeholder="Insert here the JSONDoc URL" autocomplete="off" />
+                <input id="jsondocfetch" class="span5" type="text" placeholder="Insert here the JSONDoc URL" autocomplete="off" value="http://jsondoc.eu01.aws.af.cm/api/jsondoc" />
                 <button id="getDocButton" class="btn">Get documentation</button>
             </form>
         </div>
@@ -128,384 +136,457 @@
 
 <script id="main" type="text/x-handlebars-template">
 <blockquote>
-  <p style="text-transform: uppercase;">API info</span></p>
-  <small>Base path: {{basePath}}</small>
-  <small>Version: {{version}}</small>
+    <p style="text-transform: uppercase;">API info<span/></p>
+    <small>Base path: {{basePath}}</small>
+    <small>Version: {{version}}</small>
 </blockquote>
 </script>
 
 <script id="apis" type="text/x-handlebars-template">
 <ul class="nav nav-list">
-        <li class="nav-header">APIs</li>
-        {{#apis}}
-                <li><a href="#" id="{{jsondocId}}" rel="api">{{name}}</a></li>
-        {{/apis}}
+    <li class="nav-header">APIs</li>
+    {{#apis}}
+    <li><a href="#" id="{{jsondocId}}" rel="api">{{name}}</a></li>
+    {{/apis}}
 </ul>
 </script>
 
 <script id="objects" type="text/x-handlebars-template">
 <ul class="nav nav-list">
-        <li class="nav-header">Objects</li>
-        {{#objects}}
-                <li><a href="#" id="{{jsondocId}}" rel="object">{{name}}</a></li>
-        {{/objects}}
+    <li class="nav-header">Objects</li>
+    {{#objects}}
+    <li><a href="#" id="{{jsondocId}}" rel="object">{{name}}</a></li>
+    {{/objects}}
 </ul>
 </script>
 
 <script id="methods" type="text/x-handlebars-template">
 <blockquote>
-  <p style="text-transform: uppercase;"><span id="apiName"></span></p>
-  <small><span id="apiDescription"></span></cite></small>
+    <p style="text-transform: uppercase;"><span id="apiName"></span></p>
+    <small><span id="apiDescription"></span></small>
+    <small><span id="apiSupportedVersions"></span></small>
 </blockquote>
 
 <div class="accordion" id="accordion">
-        {{#methods}}
-        <div class="accordion-group">
-                <div class="accordion-heading">
-                        <span class="label pull-right {{verb}}" style="margin-right: 5px; margin-top: 8px;">{{verb}}</span>
-                        <a href="#_{{jsondocId}}" id="{{jsondocId}}" rel="method" data-parent="#accordion" data-toggle="collapse" class="accordion-toggle">{{path}}</a>
-                </div>
-                <div class="accordion-body collapse" id="_{{jsondocId}}">
-                        <div class="accordion-inner">
-                                <table class="table table-condensed table-striped table-bordered">
-                                        <tr>
-                                                <th style="width:15%;">Path</th>
-                                                <td><code>{{path}}</code></td>
-                                        </tr>
-                                        <tr>
-                                                <th>Description</th>
-                                                <td>{{description}}</td>
-                                        </tr>
-                                        <tr>
-                                                <th>Method</th>
-                                                <td><span class="label {{verb}}">{{verb}}</span></td>
-                                        </tr>
-                                        {{#if produces}}
-                                                <tr>
-                                                        <th colspan=2>Produces</th>
-                                                </tr>
-                                                {{#each produces}}
-                                                        <tr>
-                                                                <td colspan=2><code>{{this}}</code></td>
-                                                        </tr>
-                                                {{/each}}
-                                        {{/if}}
-                                        {{#if consumes}}
-                                                <tr>
-                                                        <th colspan=2>Consumes</th>
-                                                </tr>
-                                                {{#each consumes}}
-                                                        <tr>
-                                                                <td colspan=2><code>{{this}}</code></td>
-                                                        </tr>
-                                                {{/each}}
-                                        {{/if}}
-                                        {{#if headers}}
-                                                <tr>
-                                                        <th colspan=2>Headers</th>
-                                                </tr>
-                                                {{#each headers}}
-                                                        <tr>
-                                                                <td><code>{{this.name}}</code></td>
-                                                                <td>{{this.description}}</td>
-                                                        </tr>
-                                                {{/each}}
-                                        {{/if}}
-                                        {{#if pathparameters}}
-                                                <tr>
-                                                        <th colspan=2>Path parameters</th>
-                                                </tr>
-                                                {{#each pathparameters}}
-                                                        <tr>
-                                                                <td><code>{{this.name}}</code></td>
-                                                                <td>Required: {{this.required}}</td>
+{{#methods}}
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <span class="label pull-right {{verb}}" style="margin-right: 5px; margin-top: 8px;">{{verb}}</span>
+        <a href="#_{{jsondocId}}" id="{{jsondocId}}" rel="method" data-parent="#accordion" data-toggle="collapse" class="accordion-toggle">{{path}}</a>
+    </div>
+    <div class="accordion-body collapse" id="_{{jsondocId}}">
+        <div class="accordion-inner">
+            <table class="table table-condensed table-striped table-bordered" style="table-layout: fixed;">
+                <tr>
+                    <th style="width:18%;">Path</th>
+                    <td><code>{{path}}</code></td>
+                </tr>
+                {{#if supportedversions}}
+                <tr>
+                    <td>Since version</td>
+                    <td>{{supportedversions.since}}</td>
+                </tr>
+                {{#if supportedversions.until}}
+                <tr>
+                    <td>Until version</td>
+                    <td>{{supportedversions.until}}</td>
+                </tr>
+                {{/if}}
+                {{/if}}
+                <tr>
+                    <th>Description</th>
+                    <td>{{description}}</td>
+                </tr>
+                <tr>
+                    <th>Method</th>
+                    <td><span class="label {{verb}}">{{verb}}</span></td>
+                </tr>
 
-                                                        </tr>
-                                                        <tr>
-                                                                <td></td>
-                                                                <td>Type: {{this.type}}</td>
-                                                        </tr>
-                                                        {{#if this.description}}
-                                                        <tr>
-                                                                <td></td>
-                                                                <td>Description: {{this.description}}</td>
-                                                        </tr>
-                                                        {{/if}}
-                                                        {{#if this.allowedvalues}}
-                                                        <tr>
-                                                                <td></td>
-                                                                <td>Allowed values:
-                                                                {{#each this.allowedvalues}}
-                                                                {{this}}{{#unless @last}},&nbsp{{/unless}}
-                                                                {{/each}}
-                                                                </td>
-                                                        </tr>
-                                                        {{/if}}
-                                                        {{#if this.format}}
-                                                        <tr>
-                                                                <td></td>
-                                                                <td>Format: {{this.format}}</td>
-                                                        </tr>
-                                                        {{/if}}
-                                                {{/each}}
-                                        {{/if}}
-                                        {{#if queryparameters}}
-                                                <tr>
-                                                        <th colspan=2>Query parameters</th>
-                                                </tr>
-                                                {{#each queryparameters}}
-                                                        <tr>
-                                                                <td><code>{{this.name}}</code></td>
-                                                                <td>Required: {{this.required}}</td>
+                {{#if auth}}
+                <tr>
+                    <th>Auth</th>
+                    <td>{{auth.type}}, Roles: {{auth.roles}}</td>
+                </tr>
+                {{/if}}
 
-                                                        </tr>
-                                                        <tr>
-                                                                <td></td>
-                                                                <td>Type: {{this.type}}</td>
-                                                        </tr>
-                                                        {{#if this.description}}
-                                                        <tr>
-                                                                <td></td>
-                                                                <td>Description: {{this.description}}</td>
-                                                        </tr>
-                                                        {{/if}}
-                                                        {{#if this.allowedvalues}}
-                                                        <tr>
-                                                                <td></td>
-                                                                <td>Allowed values:
-                                                                {{#each this.allowedvalues}}
-                                                                {{this}}{{#unless @last}},&nbsp{{/unless}}
-                                                                {{/each}}
-                                                                </td>
-                                                        </tr>
-                                                        {{/if}}
-                                                        {{#if this.format}}
-                                                        <tr>
-                                                                <td></td>
-                                                                <td>Format: {{this.format}}</td>
-                                                        </tr>
-                                                        {{/if}}
-                                                {{/each}}
-                                        {{/if}}
-                                        {{#if bodyobject}}
-                                                <tr>
-                                                        <th colspan=2>Body object</th>
-                                                </tr>
-                                                <tr>
-                                                        <td>Object</td>
-                                                        <td><code>{{bodyobject.object}}</code></td>
-                                                </tr>
-                                                {{#if bodyobject.map}}
-                                                        <tr>
-                                                                <td>Map key</td>
-                                                                <td><code>{{bodyobject.mapKeyObject}}</code></td>
-                                                        </tr>
-                                                        <tr>
-                                                                <td>Map value</td>
-                                                                <td><code>{{bodyobject.mapValueObject}}</code></td>
-                                                        </tr>
-                                                {{/if}}
-                                        {{/if}}
-                                        {{#if response}}
-                                                <tr>
-                                                        <th colspan=2>Response object</th>
-                                                </tr>
-                                                <tr>
-                                                        <td>Object</td>
-                                                        <td><code>{{response.object}}</code></td>
-                                                </tr>
-                                                {{#if response.map}}
-                                                        <tr>
-                                                                <td>Map key</td>
-                                                                <td><code>{{response.mapKeyObject}}</code></td>
-                                                        </tr>
-                                                        <tr>
-                                                                <td>Map value</td>
-                                                                <td><code>{{response.mapValueObject}}</code></td>
-                                                        </tr>
-                                                {{/if}}
-                                        {{/if}}
-                                        {{#if apierrors}}
-                                                <tr>
-                                                        <th colspan=2>Errors</th>
-                                                </tr>
-                                                {{#each apierrors}}
-                                                        <tr>
-                                                                <td><code>{{this.code}}</code></td>
-                                                                <td>{{this.description}}</td>
-                                                        </tr>
-                                                {{/each}}
-                                        {{/if}}
-                                </table>
-                        </div>
-                </div>
+                {{#if produces}}
+                <tr>
+                    <th colspan=2>Produces</th>
+                </tr>
+                {{#each produces}}
+                <tr>
+                    <td colspan=2><code>{{this}}</code></td>
+                </tr>
+                {{/each}}
+                {{/if}}
+                {{#if consumes}}
+                <tr>
+                    <th colspan=2>Consumes</th>
+                </tr>
+                {{#each consumes}}
+                <tr>
+                    <td colspan=2><code>{{this}}</code></td>
+                </tr>
+                {{/each}}
+                {{/if}}
+                {{#if headers}}
+                <tr>
+                    <th colspan=2>Headers</th>
+                </tr>
+                {{#each headers}}
+                <tr>
+                    <td><code>{{this.name}}</code></td>
+                    <td>{{this.description}}</td>
+                </tr>
+                {{/each}}
+                {{/if}}
+                {{#if pathparameters}}
+                <tr>
+                    <th colspan=2>Path parameters</th>
+                </tr>
+                {{#each pathparameters}}
+                <tr>
+                    <td><code>{{this.name}}</code></td>
+                    <td>Required: {{this.required}}</td>
+
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Type: {{this.type}}</td>
+                </tr>
+                {{#if this.description}}
+                <tr>
+                    <td></td>
+                    <td>Description: {{this.description}}</td>
+                </tr>
+                {{/if}}
+                {{#if this.allowedvalues}}
+                <tr>
+                    <td></td>
+                    <td>Allowed values: {{this.allowedvalues}}</td>
+                </tr>
+                {{/if}}
+                {{#if this.format}}
+                <tr>
+                    <td></td>
+                    <td>Format: {{this.format}}</td>
+                </tr>
+                {{/if}}
+                {{/each}}
+                {{/if}}
+                {{#if queryparameters}}
+                <tr>
+                    <th colspan=2>Query parameters</th>
+                </tr>
+                {{#each queryparameters}}
+                <tr>
+                    <td><code>{{this.name}}</code></td>
+                    <td>Required: {{this.required}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Type: {{this.type}}</td>
+                </tr>
+                {{#if this.description}}
+                <tr>
+                    <td></td>
+                    <td>Description: {{this.description}}</td>
+                </tr>
+                {{/if}}
+                {{#if this.allowedvalues}}
+                <tr>
+                    <td></td>
+                    <td>Allowed values: {{this.allowedvalues}}</td>
+                </tr>
+                {{/if}}
+                {{#if this.format}}
+                <tr>
+                    <td></td>
+                    <td>Format: {{this.format}}</td>
+                </tr>
+                {{/if}}
+                {{/each}}
+                {{/if}}
+                {{#if bodyobject}}
+                <tr>
+                    <th colspan=2>Body object</th>
+                </tr>
+                <tr>
+                    <td>Object</td>
+                    <td><code>{{bodyobject.object}}</code></td>
+                </tr>
+                <tr>
+                    <td>Multiple</td>
+                    <td>{{bodyobject.multiple}}</td>
+                </tr>
+                {{#if bodyobject.map}}
+                <tr>
+                    <td>Map key</td>
+                    <td><code>{{bodyobject.mapKeyObject}}</code></td>
+                </tr>
+                <tr>
+                    <td>Map value</td>
+                    <td><code>{{bodyobject.mapValueObject}}</code></td>
+                </tr>
+                {{/if}}
+                {{/if}}
+                {{#if response}}
+                <tr>
+                    <th colspan=2>Response object</th>
+                </tr>
+                <tr>
+                    <td>Object</td>
+                    <td><code>{{response.object}}</code></td>
+                </tr>
+                <tr>
+                    <td>Multiple</td>
+                    <td>{{response.multiple}}</td>
+                </tr>
+                {{#if response.map}}
+                <tr>
+                    <td>Map key</td>
+                    <td><code>{{response.mapKeyObject}}</code></td>
+                </tr>
+                <tr>
+                    <td>Map value</td>
+                    <td><code>{{response.mapValueObject}}</code></td>
+                </tr>
+                {{/if}}
+                {{/if}}
+                {{#if apierrors}}
+                <tr>
+                    <th colspan=2>Errors</th>
+                </tr>
+                {{#each apierrors}}
+                <tr>
+                    <td><code>{{this.code}}</code></td>
+                    <td>{{this.description}}</td>
+                </tr>
+                {{/each}}
+                {{/if}}
+            </table>
         </div>
-        {{/methods}}
+    </div>
+</div>
+{{/methods}}
 </div>
 </script>
 
 <script id="test" type="text/x-handlebars-template">
 <blockquote>
-  <p style="text-transform: uppercase;">Playground</span></p>
-  <small>{{path}}</small>
+    <p style="text-transform: uppercase;">Playground<span/></p>
+    <small>{{path}}</small>
 </blockquote>
 
 <div class="row-fluid">
 
-        {{#if headers}}
-        <div class="span12">
-                <div id="headers">
-                        <h4>Headers</h4>
-                        {{#headers}}
-                                <div class="input-prepend">
-                                        <span style="text-align:left;" class="add-on span4">{{name}}</span><input type="text" class="span8" name="{{name}}" placeholder="{{name}}">
-                                </div>
-                        {{/headers}}
-                </div>
+    {{#if auth}}
+    {{#equal auth.type "BASIC_AUTH"}}
+    <div class="span12">
+        <h4>Basic Authentication</h4>
+        <div class="input">
+            <select class="span12" id="basicAuthSelect" onchange="fillBasicAuthFields(); return false;">
+                <option disabled="disabled" selected="selected">Select a test user or fill inputs below</option>
+                {{#eachInMap auth.testusers}}
+                <option value="{{value}}">{{key}}</option>
+                {{/eachInMap}}
+                <option value="a-wrong-password">invalidate-credentials-cache-user</option>
+            </select>
         </div>
-        {{/if}}
-
-        {{#if produces}}
-                <div class="span6" style="margin-left:0px">
-                <div id="produces" class="playground-spacer">
-                <h4>Accept</h4>
-                {{#produces}}
-                        <label class="radio"><input type="radio" name="produces" value="{{this}}">{{this}}</label>
-                {{/produces}}
-                </div>
-                </div>
-        {{/if}}
-
-        {{#if bodyobject}}
-        {{#if consumes}}
-                <div class="span6" style="margin-left:0px">
-                <div id="consumes" class="playground-spacer">
-                <h4>Content type</h4>
-                {{#consumes}}
-                        <label class="radio"><input type="radio" name="consumes" value="{{this}}">{{this}}</label>
-                {{/consumes}}
-                </div>
-                </div>
-        {{/if}}
-        {{/if}}
-
-        {{#if pathparameters}}
-        <div class="span12" style="margin-left:0px">
-                <div id="pathparameters" class="playground-spacer">
-                        <h4>Path parameters</h4>
-                        {{#pathparameters}}
-                                <div class="input-prepend">
-                                        <span style="text-align:left;" class="add-on span4">{{name}}</span><input type="text" class="span8" name="{{name}}" placeholder="{{name}}">
-                                </div>
-                        {{/pathparameters}}
-                </div>
+        <div class="input-prepend">
+            <span style="text-align:left;" class="add-on span4">Username</span><input type="text" id="basicAuthUsername" name="basicAuthUsername" placeholder="Username">
         </div>
-        {{/if}}
-
-        {{#if queryparameters}}
-        <div class="span12" style="margin-left:0px">
-                <div id="queryparameters" class="playground-spacer">
-                        <h4>Query parameters</h4>
-                        {{#queryparameters}}
-                                <div class="input-prepend">
-                                        <span style="text-align:left;" class="add-on span4">{{name}}</span><input type="text" class="span8" name="{{name}}" placeholder="{{name}}">
-                                </div>
-                        {{/queryparameters}}
-                </div>
+        <div class="input-prepend">
+            <span style="text-align:left;" class="add-on span4">Password</span><input type="text" id="basicAuthPassword" name="basicAuthPassword" placeholder="Password">
         </div>
-        {{/if}}
+    </div>
+    {{/equal}}
+    {{/if}}
 
-        {{#if bodyobject}}
-        <div class="span12" style="margin-left:0px">
-                <div id="bodyobject" class="playground-spacer">
-                        <h4>Body object</h4>
-                        <textarea class="span12" id="inputJson" rows=10 />
-                </div>
+    {{#if headers}}
+    <div class="span12">
+        <div id="headers">
+            <h4>Headers</h4>
+            {{#headers}}
+            <div class="input-prepend">
+                <span style="text-align:left;" class="add-on span4">{{name}}</span><input type="text" class="span8" name="{{name}}" placeholder="{{name}}">
+            </div>
+            {{/headers}}
         </div>
-        {{/if}}
+    </div>
+    {{/if}}
 
-        <div class="span12" style="margin-left:0px">
-                <div class="form-actions">
-                        <button class="btn btn-primary" id="testButton" data-loading-text="Loading...">Submit</button>
-                </div>
+    {{#if produces}}
+    <div class="span6" style="margin-left:0px">
+        <div id="produces" class="playground-spacer">
+            <h4>Accept</h4>
+            {{#produces}}
+            <label class="radio"><input type="radio" name="produces" value="{{this}}">{{this}}</label>
+            {{/produces}}
         </div>
+    </div>
+    {{/if}}
+
+    {{#if bodyobject}}
+    {{#if consumes}}
+    <div class="span6" style="margin-left:0px">
+        <div id="consumes" class="playground-spacer">
+            <h4>Content type</h4>
+            {{#consumes}}
+            <label class="radio"><input type="radio" name="consumes" value="{{this}}">{{this}}</label>
+            {{/consumes}}
+        </div>
+    </div>
+    {{/if}}
+    {{/if}}
+
+    {{#if pathparameters}}
+    <div class="span12" style="margin-left:0px">
+        <div id="pathparameters" class="playground-spacer">
+            <h4>Path parameters</h4>
+            {{#pathparameters}}
+            <div class="input-prepend">
+                <span style="text-align:left;" class="add-on span4">{{name}}</span><input type="text" class="span8" name="{{name}}" placeholder="{{name}}">
+            </div>
+            {{/pathparameters}}
+        </div>
+    </div>
+    {{/if}}
+
+    {{#if queryparameters}}
+    <div class="span12" style="margin-left:0px">
+        <div id="queryparameters" class="playground-spacer">
+            <h4>Query parameters</h4>
+            {{#queryparameters}}
+            <div class="input-prepend">
+                <span style="text-align:left;" class="add-on span4">{{name}}</span><input type="text" class="span8" name="{{name}}" placeholder="{{name}}">
+            </div>
+            {{/queryparameters}}
+        </div>
+    </div>
+    {{/if}}
+
+    {{#if bodyobject}}
+    <div class="span12" style="margin-left:0px">
+        <div id="bodyobject" class="playground-spacer">
+            <h4>Body object</h4>
+            <textarea class="span12" id="inputJson" rows=10 />
+        </div>
+    </div>
+    {{/if}}
+
+    <div class="span12" style="margin-left:0px">
+        <div class="form-actions">
+            <button class="btn btn-primary" id="testButton" data-loading-text="Loading...">Submit</button>
+        </div>
+    </div>
 
 </div>
 
 <div class="tabbable" id="resInfo" style="display:none;">
-        <ul class="nav nav-tabs">
-                  <li class="active"><a href="#tab1" data-toggle="tab">Response text</a></li>
-                  <li><a href="#tab2" data-toggle="tab">Response info</a></li>
-                  <li><a href="#tab3" data-toggle="tab">Request info</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" id="tab1">
-                    <pre id="response" class="prettyprint">
-                        </pre>
-                   </div>
-            <div class="tab-pane" id="tab2">
-                        <p class="nav-header" style="padding:0px">Response code</p>
-                      <pre id="responseStatus" class="prettyprint">
-                        </pre>
-                        <p class="nav-header" style="padding:0px">Response headers</p>
-                      <pre id="responseHeaders" class="prettyprint">
-                        </pre>
-            </div>
-                <div class="tab-pane" id="tab3">
-                      <p class="nav-header" style="padding:0px">Request URL</p>
-                      <pre id="requestURL" class="prettyprint">
-                        </pre>
-            </div>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab1" data-toggle="tab">Response text</a></li>
+        <li><a href="#tab2" data-toggle="tab">Response info</a></li>
+        <li><a href="#tab3" data-toggle="tab">Request info</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab1">
+            <pre id="response" class="prettyprint">
+            </pre>
         </div>
+        <div class="tab-pane" id="tab2">
+            <p class="nav-header" style="padding:0px">Response code</p>
+            <pre id="responseStatus" class="prettyprint">
+            </pre>
+            <p class="nav-header" style="padding:0px">Response headers</p>
+            <pre id="responseHeaders" class="prettyprint">
+            </pre>
+        </div>
+        <div class="tab-pane" id="tab3">
+            <p class="nav-header" style="padding:0px">Request URL</p>
+            <pre id="requestURL" class="prettyprint">
+            </pre>
+        </div>
+    </div>
 </div>
 
 </script>
 
 <script id="object" type="text/x-handlebars-template">
-<table class="table table-condensed table-striped table-bordered">
-        <tr><th style="width:15%;">Name</th><td><code>{{name}}</code></td></tr>
-        {{#if description}}
-                <tr><th>Description</th><td>{{description}}</td></tr>
-        {{/if}}
-        {{#if fields}}
-        <tr><th colspan=2>Fields</th></tr>
-                {{#each fields}}
-                        <tr><td><code>{{name}}</code></td><td>{{description}}</td></tr>
-                        <tr><td></td><td>Type: {{type}}</td></tr>
-                        <tr><td></td><td>Multiple: {{multiple}}</td></tr>
-                        {{#if useForCreation}}
-                                <tr>
-                                        <td></td>
-                                        <td><span class="label label-info">Use for creation</span></td>
-                                </tr>
-                                {{#if mandatory}}
-                                <tr>
-                                        <td></td>
-                                        <td><span class="label label-warning">Mandatory</span></td>
-                                </tr>
-                                {{else}}
-                                 <tr>
-                                    <td></td>
-                                    <td><span class="label label-warning">Default: {{defaultValue}}</span></td>
-                                 </tr>
-                                {{/if}}
-                                {{#if presentInResponse}}
-                                {{else}}
-                                <tr>
-                                    <td></td>
-                                    <td><span class="label label-inverse">Not in response!</span></td>
-                                </tr>
-                                {{/if}}
-
-                        {{/if}}
-
-                {{/each}}
-        {{/if}}
+<table class="table table-condensed table-striped table-bordered" style="table-layout: fixed;">
+    <tr><th style="width:18%;">Name</th><td><code>{{name}}</code></td></tr>
+    {{#if description}}
+    <tr><th>Description</th><td>{{description}}</td></tr>
+    {{/if}}
+    {{#if supportedversions}}
+    <tr>
+        <td>Since version</td>
+        <td>{{supportedversions.since}}</td>
+    </tr>
+    {{#if supportedversions.until}}
+    <tr>
+        <td>Until version</td>
+        <td>{{supportedversions.until}}</td>
+    </tr>
+    {{/if}}
+    {{/if}}
+    {{#if allowedvalues}}
+    <tr><td></td><td>Allowed values: {{allowedvalues}}</td></tr>
+    {{/if}}
+    {{#if fields}}
+    <tr><th colspan=2>Fields</th></tr>
+    {{#each fields}}
+    <tr><td><code>{{name}}</code></td><td>{{description}}</td></tr>
+    <tr><td></td><td>Type: {{type}}</td></tr>
+    <tr><td></td><td>Multiple: {{multiple}}</td></tr>
+    {{#if format}}
+    <tr><td></td><td>Format: {{format}}</td></tr>
+    {{/if}}
+    <tr><td></td><td>Required: {{required}}</td></tr>
+    {{#if allowedvalues}}
+    <tr><td></td><td>Allowed values: {{allowedvalues}}</td></tr>
+    {{/if}}
+    {{#if supportedversions}}
+    <tr><td></td><td>Since version {{supportedversions.since}}</td></tr>
+    {{#if supportedversions.until}}
+    <tr><td></td><td>Until version {{supportedversions.until}}</td></tr>
+    {{/if}}
+    {{/if}}
+    {{#if map}}
+    {{#if this.mapKeyObject}}
+    <tr>
+        <td></td>
+        <td>Map key: {{this.mapKeyObject}}</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Map value: {{this.mapValueObject}}</td>
+    </tr>
+    {{/if}}
+    {{/if}}
+    {{/each}}
+    {{/if}}
 </table>
 </script>
 
 <script>
     var model;
+
+    Handlebars.registerHelper('equal', function(lvalue, rvalue, options) {
+        if(lvalue!=rvalue) {
+            return options.inverse(this);
+        } else {
+            return options.fn(this);
+        }
+    });
+
+    Handlebars.registerHelper( 'eachInMap', function ( map, block ) {
+        var out = '';
+        Object.keys( map ).map(function( prop ) {
+            out += block.fn( {key: prop, value: map[ prop ]} );
+        });
+        return out;
+    } );
 
     function checkURLExistence() {
         var value = $("#jsondocfetch").val();
@@ -528,6 +609,11 @@
         checkURLExistence();
         return false;
     });
+
+    function fillBasicAuthFields() {
+        $("#basicAuthPassword").val($("#basicAuthSelect").val());
+        $("#basicAuthUsername").val($("#basicAuthSelect").find(":selected").text());
+    }
 
     function printResponse(data, res, url) {
         if(res.responseXML != null) {
@@ -602,6 +688,12 @@
                         $("#content").show();
                         $("#apiName").text(api.name);
                         $("#apiDescription").text(api.description);
+                        if(api.supportedversions) {
+                            $("#apiSupportedVersions").text("Since version: " + api.supportedversions.since);
+                            if(api.supportedversions.until) {
+                                $("#apiSupportedVersions").text($("#apiSupportedVersions").text() + " - Until version: " + api.supportedversions.until);
+                            }
+                        }
                         $("#testContent").hide();
 
                         $('#content a[rel="method"]').each(function() {
@@ -622,6 +714,12 @@
 
                                     headers["Accept"] = $("#produces input:checked").val();
 
+                                    if(method.auth) {
+                                        if(method.auth.type == "BASIC_AUTH") {
+                                            headers["Authorization"] = "Basic " + window.btoa($('#basicAuthUsername').val() + ":" + $('#basicAuthPassword').val());
+                                        }
+                                    }
+
                                     var replacedPath = method.path;
                                     var tempReplacedPath = replacedPath; // this is to handle more than one parameter on the url
                                     $("#pathparameters input").each(function() {
@@ -629,9 +727,9 @@
                                         replacedPath = tempReplacedPath;
                                     });
 
-                                    replacedPath = replacedPath + "?";
                                     $("#queryparameters input").each(function() {
-                                        replacedPath = replacedPath + "&" + this.name + "=" + $(this).val();
+                                        tempReplacedPath = replacedPath.replace("{"+this.name+"}", $(this).val());
+                                        replacedPath = tempReplacedPath;
                                     });
 
                                     $('#testButton').button('loading');
@@ -644,7 +742,6 @@
                                         contentType: $("#consumes input:checked").val(),
                                         success : function(data) {
                                             printResponse(data, res, this.url);
-
                                         },
                                         error: function(data) {
                                             printResponse(data, res, this.url);
@@ -657,9 +754,7 @@
                         });
                     });
                 });
-                var allLink = $("#apidiv").find("ul.nav").find("a");
-                var lastLink = allLink[allLink.length-1];
-                lastLink.click();
+
                 var objects = Handlebars.compile($("#objects").html());
                 var objectsHTML = objects(data);
                 $("#objectdiv").html(objectsHTML);
@@ -683,34 +778,8 @@
             }
         });
     }
-    $(document).ready(function() {
-
-        var parseQueryString = function() {
-            var vars = [], hash;
-            var q = document.URL.split('?')[1];
-            if(q != undefined){
-                q = q.split('&');
-                for(var i = 0; i < q.length; i++){
-                    hash = q[i].split('=');
-                    vars.push(hash[1]);
-                    vars[hash[0]] = hash[1];
-                }
-            }
-            return vars;
-        }
-
-        var parameters = parseQueryString();
-        if (parameters['doc_url']) {
-            $('#jsondocfetch').attr('value', parameters['doc_url']);
-            $('#getDocButton').click();
-        }
-
-    });
 
 </script>
 
 </body>
 </html>
-
-
-
