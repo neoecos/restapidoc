@@ -9,14 +9,15 @@
     <meta name="author" content="">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="../js/jsondoc/bootstrap.min.js"></script>
+    <script src="../assets/bootstrap.js"></script>
     <script type="text/javascript" src="../js/jsondoc/handlebars-v2.0.0.js"></script>
     <script type="text/javascript" src="../js/jsondoc/jlinq.js"></script>
     <script type="text/javascript" src="../js/jsondoc/prettify.js"></script>
     <script src="../js/jsondoc/bootstrap-button.js"></script>
+
     <!-- Le styles -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/font-awesome.css" rel="stylesheet" >
+    <link href="../assets/bootstrap.css" rel="stylesheet">
+    <link href="../css/jsondoc/font-awesome.css" rel="stylesheet" >
 
     <style type="text/css">
     body {
@@ -89,7 +90,6 @@
     }
     </style>
     <link href="../css/jsondoc/bootstrap-responsive.min.css" rel="stylesheet">
-
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -103,7 +103,7 @@
         <div class="container-fluid">
             <a class="brand" href="#">JSONDoc</a>
             <form class="navbar-form pull-left">
-                <input id="jsondocfetch" class="span5" type="text" placeholder="Insert here the JSONDoc URL" autocomplete="off"/>
+                <input id="jsondocfetch" class="span5" type="text" placeholder="Insert here the JSONDoc URL" autocomplete="off" value="http://jsondoc.eu01.aws.af.cm/api/jsondoc" />
                 <button id="getDocButton" class="btn">Get documentation</button>
             </form>
         </div>
