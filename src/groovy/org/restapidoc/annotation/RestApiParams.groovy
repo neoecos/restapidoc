@@ -5,7 +5,7 @@ import java.lang.annotation.*
 
 /**
  * This annotation is to be used on your method and contains an array of ApiParam
- * @see ApiParam
+ * @see RestApiParam
  * @author Benjamin Stévens
  *
  */
@@ -16,7 +16,7 @@ public @interface RestApiParams {
 
     /**
      * An array of ApiParam annotations
-     * @see ApiParam
+     * @see RestApiParam
      * @return
      */
     public RestApiParam[] params();

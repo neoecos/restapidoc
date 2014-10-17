@@ -66,8 +66,6 @@ class JSONUtils {
         }
 
 
-
-
         JSON.registerObjectMarshaller(RestApiObjectFieldDoc) {
             def returnArray = [:]
             returnArray['jsondocId'] = it.jsondocId
@@ -116,6 +114,8 @@ class JSONUtils {
             returnArray['response'] = it.response
             returnArray['apierrors'] = it.apierrors
             returnArray['methodName'] = it.methodName
+            returnArray['auth'] = it.auth
+            returnArray['supportedversions'] = it.supportedversions
             return returnArray
         }
 
@@ -140,6 +140,22 @@ class JSONUtils {
             return returnArray
         }
 
+        JSON.registerObjectMarshaller(RestApiAuthDoc) {
+            def returnArray = [:]
+            returnArray['type'] = it.getType()
+            returnArray['roles'] = it.getRoles()
+            returnArray['testusers'] = it.getTestusers()
+
+            return returnArray
+        }
+
+        JSON.registerObjectMarshaller(RestApiVersionDoc) {
+            def returnArray = [:]
+            returnArray['since'] = it.getSince()
+            returnArray['until'] = it.getUntil()
+
+            return returnArray
+        }
 
     }
 }

@@ -21,7 +21,11 @@ import java.lang.reflect.Method
 public class RestApiObjectDoc extends ApiObjectDoc {
 
     public RestApiObjectDoc(String name, String description, List<RestApiObjectFieldDoc> fields) {
-        super(name, description, fields);
+        super();
+        this.setName(name);
+        this.setDescription(description);
+        this.setFields(fields);
+
     }
 
     /**

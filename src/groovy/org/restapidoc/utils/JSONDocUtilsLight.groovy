@@ -72,6 +72,7 @@ public class JSONDocUtilsLight extends JSONDocUtils {
             RestApiDoc apiDoc = RestApiDoc.buildFromAnnotation(controller.getAnnotation(RestApi.class));
             apiDoc.setMethods(getApiMethodDocs(objectClasses, controller, rules));
             apiDoc.setMethods(getApiMethodDocs(objectClasses, controller, rules));
+            apiDoc.setAuth(getRestApiAuthDocForController(controller));
             apiDocs.add(apiDoc);
         }
         return apiDocs;
@@ -258,6 +259,12 @@ public class JSONDocUtilsLight extends JSONDocUtils {
         extractDefaultErrors(errors, verb)
         apiMethodDoc.setApierrors(errors)
 
+        if(method.isAnnotationPresent(RestApiVersion.class)) {
+            apiMethodDoc.setSupportedversions(RestApiVersionDoc.buildFromAnnotation(method.getAnnotation(RestApiVersion.class)));
+        }
+
+        apiMethodDoc.setAuth(getRestApiAuthDocForMethod(method, controller))
+
         log.info "\t\t\tapiMethodDoc: ${apiMethodDoc.description} ..."
         return apiMethodDoc
     }
@@ -365,4 +372,25 @@ public class JSONDocUtilsLight extends JSONDocUtils {
         }
         return str
     }
+
+    private static RestApiAuthDoc getRestApiAuthDocForController(Class<?> clazz) {
+        if(clazz.isAnnotationPresent(RestApiAuthNone.class)) {
+            return RestApiAuthDoc.buildFromApiAuthNoneAnnotation(clazz.getAnnotation(RestApiAuthNone.class));
+        }
+        if(clazz.isAnnotationPresent(RestApiAuthBasic.class)) {
+            return RestApiAuthDoc.buildFromApiAuthBasicAnnotation(clazz.getAnnotation(RestApiAuthBasic.class));
+        }
+        return null;
+    }
+
+    private static RestApiAuthDoc getRestApiAuthDocForMethod(Method method, Class<?> clazz) {
+        if(method.isAnnotationPresent(RestApiAuthNone.class)) {
+            return RestApiAuthDoc.buildFromApiAuthNoneAnnotation(method.getAnnotation(RestApiAuthNone.class));
+        }
+        if(method.isAnnotationPresent(RestApiAuthBasic.class)) {
+            return RestApiAuthDoc.buildFromApiAuthBasicAnnotation(method.getAnnotation(RestApiAuthBasic.class));
+        }
+        return getRestApiAuthDocForController(clazz);
+    }
+
 }
