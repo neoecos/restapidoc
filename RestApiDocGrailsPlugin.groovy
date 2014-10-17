@@ -1,6 +1,6 @@
 class RestApiDocGrailsPlugin {
     // the plugin version
-    def version = "0.4"
+    def version = "0.4.5"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.3 > *"
     // resources that are excluded from plugin packaging
@@ -37,7 +37,8 @@ This plugin allows you to document methods (description, HTTP path/verb, paramet
 //    def organization = [ name: "My Company", url: "http://www.my-company.com/" ]
 
     // Any additional developers beyond the author specified above.
-    def developers = [ [ name: "Benjamin Stevens", email: "b.stevens@ulg.ac.be" ]]
+    def developers = [ [ name: "Benjamin Stevens", email: "b.stevens@ulg.ac.be" ],
+                       [ name: "Sebastian Ortiz", email: "neoecos@gmail.com" ]]
 
     // Location of the plugin's issue tracker.
     def issueManagement = [ system: "GITHUB", url: "https://github.com/loic911/restapidoc/issues" ]
