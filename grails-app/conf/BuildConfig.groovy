@@ -38,15 +38,15 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // runtime 'mysql:mysql-connector-java:5.1.24'
-        runtime 'org.springframework:spring-test:3.1.0.RELEASE'
-        test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
+        compile 'org.jsondoc:jsondoc-core:1.0.4'
+        /*runtime 'org.springframework:spring-test:3.1.0.RELEASE'
+        test "org.spockframework:spock-grails-support:0.7-groovy-2.0"*/
     }
 
     plugins {
-        build ":tomcat:7.0.42"
+        build ":tomcat:7.0.55"
 
         compile ":plugin-config:0.2.0"
-
 
         build(":release:3.0.1",
               ":rest-client-builder:1.0.3") {
